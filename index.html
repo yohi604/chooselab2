@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>선택연구소 | 결정장애 치유 프로젝트</title>
+  <meta name="description" content="정답을 주지 않습니다. 당신의 마음과 선택을 정리해드립니다." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* 밝고 깨끗한 테마 변수 정의 */
+    :root {
+      --bg: #f5f7fa;           /* 배경: 아주 밝은 회색 */
+      --card: #ffffff;         /* 카드: 깨끗한 흰색 */
+      --text: #1a1f2c;         /* 본문 텍스트: 진한 챠콜 */
+      --muted: #64748b;        /* 보조 텍스트: 중간 회색 */
+      --line: #e2e8f0;         /* 테두리 선: 연한 회색 */
+      --accent: #0066ff;       /* 포인트 컬러: 선명한 블루 */
+      --accent-soft: #e6f0ff;  /* 포인트 배경색 (연한 블루) */
+      --input-bg: #f8fafc;     /* 입력창 배경 */
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); /* 부드러운 그림자 */
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025); /* 큰 그림자 */
+    }
+
+    *{box-sizing:border-box}
+    body{margin:0;font-family:'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:var(--bg); color:var(--text); line-height:1.6}
+    .wrap{max-width:800px;margin:0 auto;padding:60px 20px 100px}
+
+    /* Header */
+    .header{text-align:center;margin-bottom:40px}
+    h1{margin:0 0 12px;font-size:32px;font-weight:800;letter-spacing:-0.5px;color:var(--text);}
+    .sub{color:var(--muted);font-size:16px; word-break: keep-all;}
+    .pill{display:inline-block;margin-top:16px;padding:6px 14px;border:1px solid var(--line);border-radius:30px;font-size:12px;color:var(--muted);background:#fff; font-weight: 600;}
+
+    /* Grid Layout */
+    .grid{display:grid;gap:30px;grid-template-columns:1fr; align-items: start;}
+    @media(min-width:768px){.grid{grid-template-columns:1fr 1fr}}
+
+    /* Card Styles */
+    .card{background:var(--card);border-radius:24px;padding:32px;box-shadow:var(--shadow-lg); border:1px solid rgba(255,255,255,0.5);}
+    .card h2{margin:0 0 24px;font-size:20px;color:var(--text);display:flex;align-items:center;justify-content:space-between; font-weight: 700;}
+
+    /* Inputs */
+    label{display:block;color:var(--text);font-size:14px;margin-bottom:10px;font-weight:700}
+    textarea,input{width:100%;background:var(--input-bg);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:16px;font-size:15px;outline:none;transition:all 0.2s ease; font-family: inherit;}
+    textarea::placeholder, input::placeholder {color: #a0aec0;}
+    textarea:focus,input:focus{border-color:var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); background: #fff;}
+    textarea{min-height:140px;resize:none}
+
+    /* Options & Emotions */
+    .options{display:flex;flex-direction:column;gap:12px;margin-bottom:30px}
+    .emotions{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:30px}
+    .chip{padding:10px 18px;border-radius:30px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;transition:all 0.2s;font-size:14px; font-weight: 600;}
+    .chip:hover{background:var(--input-bg); border-color: #cbd5e1;}
+    .chip[data-on="1"]{border-color:var(--accent);background:var(--accent);color:#fff;box-shadow: 0 4px 6px rgba(0, 102, 255, 0.2);}
+
+    /* Buttons */
+    .btn{width:100%;padding:16px;border-radius:14px;border:none;font-weight:700;font-size:16px;cursor:pointer;transition:all 0.2s;}
+    .btnPrimary{background:var(--accent);color:#fff; box-shadow: 0 4px 6px rgba(0, 102, 255, 0.25);}
+    .btnPrimary:hover{background:#0052cc; transform: translateY(-1px); box-shadow: 0 6px 8px rgba(0, 102, 255, 0.3);}
+    .btnPrimary:active{transform: translateY(0);}
+    .btnPrimary:disabled{background:var(--line);color:var(--muted);cursor:not-allowed; box-shadow: none; transform: none;}
+    .btnGhost{background:transparent;border:2px solid var(--line);color:var(--muted);margin-top:12px}
+    .btnGhost:hover{border-color:var(--muted);color:var(--text); background: var(--input-bg);}
+
+    /* Results */
+    .result-area{display:none} /* JS로 토글 */
+    .block{background:var(--input-bg);border-radius:16px;padding:20px;margin-bottom:16px;border:1px solid var(--line);}
+    .block h3{margin:0 0 10px;font-size:13px;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px; font-weight: 700;}
+    .block p, .block li{font-size:15px;color:var(--text);margin:0;line-height:1.65}
+    .block ul{padding-left:20px;margin:0}
+    .block li {margin-bottom: 6px;}
+
+    /* Scores */
+    .scores{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
+    .scoreCard{background:#fff;padding:16px;border-radius:16px;text-align:center; border: 1px solid var(--line); box-shadow: var(--shadow);}
+    .scoreLabel{font-size:12px;color:var(--muted);margin-bottom:6px; font-weight: 600;}
+    .scoreVal{font-size:22px;font-weight:800;color:var(--accent);}
+
+    /* Share Box */
+    .share-box{background:linear-gradient(135deg, var(--accent) 0%, #0047b3 100%);border-radius:16px;padding:24px;text-align:center;margin-bottom:24px; color: #fff; box-shadow: 0 8px 16px rgba(0, 102, 255, 0.2);}
+    .share-text{font-size:18px;font-weight:700;margin-bottom:16px;word-break:keep-all; line-height: 1.4;}
+    .copy-btn{background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;padding:8px 16px;border-radius:30px;font-size:13px;cursor:pointer; font-weight: 600; transition: 0.2s;}
+    .copy-btn:hover {background:rgba(255,255,255,0.3);}
+
+    /* Loader */
+    .loader {width:20px;height:20px;border:3px solid rgba(255,255,255,0.3);border-bottom-color:#fff;border-radius:50%;display:inline-block;box-sizing:border-box;animation: rotation 1s linear infinite; vertical-align:middle; margin-right:8px; display:none;}
+    @keyframes rotation {0% {transform: rotate(0deg)} 100% {transform: rotate(360deg)}}
+
+    /* Status Badge */
+    #statusBadge { background: var(--input-bg); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1px solid var(--line);}
+
+    .hidden{display:none !important}
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header">
+    <h1>선택연구소</h1>
+    <div class="sub">정답을 주지 않습니다. 대신, 당신의 마음과 선택을 <b>명쾌하게 정리</b>해드립니다.</div>
+    <div class="pill">무료 MVP · 저장/로그인 없음</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>고민 입력</h2>
+
+      <label>1. 지금 어떤 고민을 하고 계신가요?</label>
+      <textarea id="situation" placeholder="구체적인 상황과 고민되는 지점을 적어주세요. (예: 이직 제안을 받았는데 연봉은 높지만 너무 바쁠 것 같아 고민이에요...)"></textarea>
+
+      <label style="margin-top:24px">2. 고려 중인 선택지 (A vs B)</label>
+      <div class="options">
+        <input id="optA" placeholder="선택 A 입력 (예: 이직한다)">
+        <input id="optB" placeholder="선택 B 입력 (예: 현 직장에 남는다)">
+      </div>
+
+      <label style="margin-top:24px">3. 현재 가장 크게 드는 감정은?</label>
+      <div class="emotions">
+        <div class="chip" data-val="불안">불안</div>
+        <div class="chip" data-val="설렘">설렘</div>
+        <div class="chip" data-val="혼란">혼란</div>
+        <div class="chip" data-val="답답함">답답함</div>
+        <div class="chip" data-val="두려움">두려움</div>
+      </div>
+
+      <div style="margin-top: 32px;">
+        <button class="btn btnPrimary" id="analyzeBtn">
+            <span class="loader" id="loader"></span>
+            <span id="btnText">분석하기</span>
+        </button>
+        <button class="btn btnGhost" id="sampleBtn">예시 데이터로 체험하기</button>
+      </div>
+    </div>
+
+    <div class="card" id="resultCardBox">
+      <h2>분석 결과 <span id="statusBadge" style="color:var(--muted)">대기 중</span></h2>
+
+      <div id="idleState" style="text-align:center; padding:60px 0; color:var(--muted)">
+        <img src="https://cdn-icons-png.flaticon.com/512/10473/10473558.png" width="64" style="opacity:0.3; margin-bottom: 20px;">
+        <p style="font-size: 16px; margin: 0;">왼쪽에 고민을 입력하고<br><b>[분석하기]</b> 버튼을 눌러주세요.</p>
+      </div>
+
+      <div id="resultArea" class="result-area">
+
+        <div class="share-box">
+          <div class="share-text" id="resShare">"결과는..."</div>
+          <button class="copy-btn" id="copyShareBtn">📋 한 줄 요약 복사</button>
+        </div>
+
+        <div class="block">
+          <h3>🧐 감정의 핵심</h3>
+          <p id="resEmotion"></p>
+        </div>
+
+        <div class="block">
+          <h3>💡 발견된 패턴</h3>
+          <p id="resPattern"></p>
+        </div>
+
+        <div class="block" style="border-color: #fecaca; background: #fff5f5;">
+          <h3 style="color: #dc2626;">⚠️ 체크할 리스크</h3>
+          <ul id="resRisks" style="color: #991b1b;"></ul>
+        </div>
+
+        <div class="block" style="border-color: #bbf7d0; background: #f0fdf4;">
+          <h3 style="color: #16a34a;">🚀 추천 가이드</h3>
+          <p id="resRec" style="color: #166534; font-weight: 600;"></p>
+        </div>
+
+        <div class="block">
+          <h3>💌 미래의 메시지</h3>
+          <p id="resFuture"></p>
+        </div>
+
+        <div class="scores">
+          <div class="scoreCard"><div class="scoreLabel">실행 가능성</div><div class="scoreVal" id="scFeas">-</div></div>
+          <div class="scoreCard"><div class="scoreLabel">감정 개입도</div><div class="scoreVal" id="scEmo">-</div></div>
+          <div class="scoreCard"><div class="scoreLabel">후회 확률</div><div class="scoreVal" id="scReg">-</div></div>
+          <div class="scoreCard"><div class="scoreLabel">리스크 민감도</div><div class="scoreVal" id="scRisk">-</div></div>
+        </div>
+
+        <button class="btn btnGhost" id="resetBtn" style="margin-top:24px">다시 입력하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const $ = (s) => document.querySelector(s);
+  let selectedEmotion = null;
+
+  // 감정 선택 로직
+  document.querySelectorAll('.chip').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.chip').forEach(c => c.dataset.on = "0");
+      el.dataset.on = "1";
+      selectedEmotion = el.dataset.val;
+    });
+  });
+
+  // 샘플 채우기
+  $('#sampleBtn').addEventListener('click', () => {
+    $('#situation').value = "연봉은 높은데 너무 바쁜 스타트업으로 이직할지, 지금 다니는 안정적인 대기업에 남을지 고민입니다. 결혼 준비도 해야 해서 시간이 필요한데 돈도 필요해요.";
+    $('#optA').value = "스타트업으로 이직 (도전, 고연봉, 바쁨)";
+    $('#optB').value = "대기업 잔류 (안정, 워라밸, 성장정체)";
+    document.querySelectorAll('.chip')[2].click(); // 혼란
+
+    // 사용자 편의를 위해 스크롤 이동
+    $('#analyzeBtn').scrollIntoView({behavior: "smooth", block: "center"});
+  });
+
+  // 초기화
+  $('#resetBtn').addEventListener('click', () => {
+    $('#resultArea').style.display = 'none';
+    $('#idleState').style.display = 'block';
+    $('#statusBadge').innerText = "대기 중";
+    $('#statusBadge').style.color = "var(--muted)";
+    $('#statusBadge').style.background = "var(--input-bg)";
+
+    $('#situation').value = "";
+    $('#optA').value = "";
+    $('#optB').value = "";
+    document.querySelectorAll('.chip').forEach(c => c.dataset.on = "0");
+    selectedEmotion = null;
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // 분석하기 버튼 클릭
+  $('#analyzeBtn').addEventListener('click', async () => {
+    const situation = $('#situation').value.trim();
+    const optA = $('#optA').value.trim();
+    const optB = $('#optB').value.trim();
+
+    if(!situation || !optA || !optB || !selectedEmotion) {
+      alert("💡 모든 내용을 입력하고 감정을 선택해주세요!");
+      return;
+    }
+
+    // 로딩 상태 전환
+    const btn = $('#analyzeBtn');
+    const loader = $('#loader');
+    const btnText = $('#btnText');
+
+    btn.disabled = true;
+    loader.style.display = 'inline-block';
+    btnText.innerText = "열심히 분석 중...";
+    $('#statusBadge').innerText = "분석 진행 중...";
+    $('#statusBadge').style.color = "var(--accent)";
+    $('#statusBadge').style.background = "var(--accent-soft)";
+
+    // 모바일에서 결과 영역이 보이도록 살짝 스크롤
+    if(window.innerWidth < 768) {
+        $('#resultCardBox').scrollIntoView({behavior: "smooth", block: "start"});
+    }
+
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          situation,
+          options: [optA, optB],
+          emotion: selectedEmotion
+        })
+      });
+
+      if(!res.ok) throw new Error("서버와 통신 중 오류가 발생했습니다.");
+
+      const data = await res.json();
+      renderResult(data);
+
+    } catch (e) {
+      console.error(e);
+      alert("오류가 발생했습니다: " + e.message);
+      $('#statusBadge').innerText = "오류 발생";
+      $('#statusBadge').style.color = "#dc2626";
+    } finally {
+      // 로딩 해제
+      btn.disabled = false;
+      loader.style.display = 'none';
+      btnText.innerText = "분석하기";
+    }
+  });
+
+  function renderResult(data) {
+    $('#idleState').style.display = 'none';
+    $('#resultArea').style.display = 'block';
+    $('#statusBadge').innerText = "분석 완료!";
+    $('#statusBadge').style.color = "#16a34a"; // green
+    $('#statusBadge').style.background = "#dcfce7"; // light green bg
+
+    $('#resShare').innerText = data.share_summary || "나의 선택, 정리가 완료되었습니다.";
+    $('#resEmotion').innerText = data.emotion_summary;
+    $('#resPattern').innerText = data.pattern_analysis;
+    $('#resRec').innerText = data.recommendation;
+    $('#resFuture').innerText = data.future_message;
+
+    // 리스크 리스트 렌더링
+    const riskHtml = data.risks.map(r => `<li>${r}</li>`).join('');
+    $('#resRisks').innerHTML = riskHtml;
+
+    // 점수 렌더링
+    $('#scFeas').innerText = data.scores.feasibility;
+    $('#scEmo').innerText = data.scores.emotion_influence;
+    $('#scReg').innerText = data.scores.regret_probability + "%";
+    $('#scRisk').innerText = data.scores.risk_sensitivity;
+
+    // 결과 쪽으로 스크롤 이동
+    $('#resultCardBox').scrollIntoView({behavior: "smooth", block: "start"});
+  }
+
+  // 한 줄 요약 복사
+  $('#copyShareBtn').addEventListener('click', () => {
+    const text = $('#resShare').innerText;
+    // 실제 배포 주소로 변경 필요
+    const url = window.location.origin;
+    navigator.clipboard.writeText(`[선택연구소] ${text}\n👉 나도 정리하러 가기: ${url}`);
+
+    const originalText = $('#copyShareBtn').innerText;
+    $('#copyShareBtn').innerText = "✅ 복사완료!";
+    setTimeout(() => {
+        $('#copyShareBtn').innerText = originalText;
+    }, 2000);
+  });
+</script>
+
+</body>
+</html>
