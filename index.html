@@ -3,162 +3,224 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TripReady</title>
+  <title>TripReady | 여행 준비의 모든 것</title>
+  <meta name="description" content="여행 준비를 대신 정리해드립니다. 상황에 맞춘 체크리스트와 타임라인." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
-    :root { --bg:#0b0f17; --card:#121a26; --muted:#9fb0c8; --text:#eaf0ff; --line:#23324a; --accent:#7aa7ff; }
+    :root {
+      --bg: #f0f4f8;           /* 배경: 아주 밝은 쿨그레이 */
+      --card: #ffffff;         /* 카드: 화이트 */
+      --text: #1e293b;         /* 본문: 짙은 네이비 그레이 */
+      --text-soft: #64748b;    /* 보조: 중간 그레이 */
+      --line: #e2e8f0;         /* 라인: 연한 그레이 */
+      --accent: #0ea5e9;       /* 포인트: 스카이 블루 */
+      --accent-soft: #e0f2fe;  /* 포인트 배경 */
+      --input-bg: #f8fafc;     /* 입력창 배경 */
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    }
+
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Noto Sans KR,Apple SD Gothic Neo,sans-serif;background:linear-gradient(180deg,#0b0f17,#070a10);color:var(--text)}
-    .wrap{max-width:1020px;margin:0 auto;padding:28px 18px 64px}
-    .top{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
-    .brand{display:flex;flex-direction:column;gap:6px}
-    h1{margin:0;font-size:26px;letter-spacing:-0.3px}
-    .sub{color:var(--muted);font-size:14px;line-height:1.45}
-    .pill{border:1px solid var(--line);color:var(--muted);padding:8px 10px;border-radius:999px;font-size:12px}
-    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}
-    @media(min-width:900px){.grid{grid-template-columns:1.05fr .95fr}}
-    .card{background:rgba(18,26,38,.92);border:1px solid rgba(35,50,74,.85);border-radius:16px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-    .card h2{margin:0 0 12px;font-size:16px;color:#dbe7ff}
-    label{display:block;color:var(--muted);font-size:13px;margin-bottom:8px}
-    textarea,input,select{width:100%;background:#0c1320;border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px 12px;font-size:14px;outline:none}
-    textarea{min-height:98px;resize:vertical}
-    input,select{height:42px}
-    .row{display:flex;gap:10px}
+    body{margin:0;font-family:'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:var(--bg); color:var(--text); line-height:1.6}
+    .wrap{max-width:1020px;margin:0 auto;padding:60px 20px 100px}
+
+    /* Header */
+    .header{text-align:center;margin-bottom:40px}
+    h1{margin:0 0 12px;font-size:32px;font-weight:800;letter-spacing:-0.5px;color:#0f172a;}
+    .sub{color:var(--text-soft);font-size:16px; word-break: keep-all;}
+    .pill{display:inline-block;margin-top:16px;padding:6px 14px;border:1px solid var(--line);border-radius:30px;font-size:12px;color:var(--text-soft);background:#fff; font-weight: 600;}
+
+    /* Grid Layout */
+    .grid{display:grid;gap:30px;grid-template-columns:1fr; align-items: start;}
+    @media(min-width:900px){.grid{grid-template-columns:1fr 1fr}}
+
+    /* Card Styles */
+    .card{background:var(--card);border-radius:24px;padding:32px;box-shadow:var(--shadow-lg); border:1px solid rgba(255,255,255,0.5);}
+    .card h2{margin:0 0 24px;font-size:20px;color:var(--text);display:flex;align-items:center;justify-content:space-between; font-weight: 700;}
+
+    /* Inputs */
+    label{display:block;color:var(--text);font-size:14px;margin-bottom:8px;font-weight:700}
+    textarea,input,select{width:100%;background:var(--input-bg);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:14px;font-size:15px;outline:none;transition:all 0.2s ease; font-family: inherit;}
+    textarea::placeholder, input::placeholder {color: #94a3b8;}
+    textarea:focus,input:focus,select:focus{border-color:var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); background: #fff;}
+    textarea{min-height:100px;resize:vertical}
+
+    .row{display:flex;gap:12px; margin-bottom: 16px;}
     .row>*{flex:1}
-    .chips{display:flex;flex-wrap:wrap;gap:8px}
-    .chip{padding:9px 10px;border-radius:999px;border:1px solid var(--line);background:#0c1320;color:#cfe0ff;font-size:13px;cursor:pointer}
-    .chip[data-on="1"]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(122,167,255,.15)}
-    .btn{background:#0c1320;border:1px solid var(--line);color:var(--text);border-radius:12px;padding:10px 12px;font-size:14px;cursor:pointer}
-    .btn:hover{border-color:#35507a}
-    .btnPrimary{background:linear-gradient(180deg,#2a4c86,#203a69);border-color:#3a5da3}
-    .btnPrimary:hover{filter:brightness(1.05)}
-    .btnGhost{background:transparent}
-    .tiny{font-size:12px;color:var(--muted)}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}
-    .divider{height:1px;background:rgba(35,50,74,.9);margin:14px 0}
-    .result{display:flex;flex-direction:column;gap:12px}
-    .sectionTitle{display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .badge{font-size:12px;color:#cfe0ff;border:1px solid rgba(122,167,255,.35);background:rgba(122,167,255,.08);padding:6px 9px;border-radius:999px}
-    .block{background:#0c1320;border:1px solid var(--line);border-radius:14px;padding:12px}
-    .block h3{margin:0 0 8px;font-size:13px;color:#dbe7ff;display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .block p{margin:0;color:#d6e2ff;line-height:1.55;font-size:14px;white-space:pre-wrap}
-    .list{margin:0;padding-left:18px;color:#d6e2ff;line-height:1.55;font-size:14px}
-    .cols{display:grid;grid-template-columns:1fr;gap:10px}
-    @media(min-width:700px){.cols{grid-template-columns:1fr 1fr}}
-    .scoreRow{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+
+    /* Chips */
+    .chips{display:flex;flex-wrap:wrap;gap:8px; margin-bottom: 24px;}
+    .chip{padding:10px 16px;border-radius:30px;border:1px solid var(--line);background:#fff;color:var(--text-soft);cursor:pointer;transition:all 0.2s;font-size:14px; font-weight: 600;}
+    .chip:hover{background:var(--input-bg); border-color: #cbd5e1;}
+    .chip[data-on="1"]{border-color:var(--accent);background:var(--accent);color:#fff;box-shadow: 0 4px 6px rgba(14, 165, 233, 0.25);}
+
+    /* Buttons */
+    .btn{width:100%;padding:16px;border-radius:14px;border:none;font-weight:700;font-size:16px;cursor:pointer;transition:all 0.2s;}
+    .btnPrimary{background:var(--accent);color:#fff; box-shadow: 0 4px 6px rgba(14, 165, 233, 0.25);}
+    .btnPrimary:hover{background:#0284c7; transform: translateY(-1px); box-shadow: 0 6px 8px rgba(14, 165, 233, 0.3);}
+    .btnPrimary:disabled{background:var(--line);color:var(--text-soft);cursor:not-allowed; box-shadow: none; transform: none;}
+    .btnGhost{background:transparent;border:2px solid var(--line);color:var(--text-soft);margin-top:12px; font-size: 14px; padding: 12px;}
+    .btnGhost:hover{border-color:var(--text-soft);color:var(--text); background: var(--input-bg);}
+
+    .actions {margin-top: 20px;}
+
+    /* Results */
+    .result-area{display:none}
+    .block{background:var(--input-bg);border-radius:16px;padding:20px;margin-bottom:16px;border:1px solid var(--line);}
+    .block h3{margin:0 0 12px;font-size:14px;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px; font-weight: 800; display:flex; justify-content:space-between; align-items:center;}
+    .block p, .block li{font-size:15px;color:var(--text);margin:0;line-height:1.6}
+    .list{margin:0;padding-left:20px; list-style-type: disc;}
+    .list li {margin-bottom: 6px; color: #334155;}
+
+    /* Layouts within Result */
+    .cols{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:600px){.cols{grid-template-columns:1fr 1fr}}
+
+    /* Scores */
+    .scoreRow{display:grid;grid-template-columns:repeat(2,1fr);gap:12px; margin-top: 24px;}
     @media(min-width:540px){.scoreRow{grid-template-columns:repeat(4,1fr)}}
-    .scoreCard{background:#0c1320;border:1px solid var(--line);border-radius:14px;padding:12px}
-    .scoreLabel{font-size:12px;color:var(--muted);margin-bottom:6px}
-    .scoreVal{font-size:20px;font-weight:700;letter-spacing:-0.4px}
-    .warn{color:#ffd6a6}
-    .ok{color:#bfe5ff}
-    .footer{margin-top:14px;color:var(--muted);font-size:12px;line-height:1.45}
-    .hidden{display:none}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    .scoreCard{background:#fff;padding:16px;border-radius:16px;text-align:center; border: 1px solid var(--line); box-shadow: var(--shadow);}
+    .scoreLabel{font-size:12px;color:var(--text-soft);margin-bottom:6px; font-weight: 600;}
+    .scoreVal{font-size:18px;font-weight:800;color:var(--accent); word-break: break-all;}
+
+    /* Misc */
+    .divider{height:1px;background:var(--line);margin:24px 0}
+    .loader {width:20px;height:20px;border:3px solid rgba(255,255,255,0.3);border-bottom-color:#fff;border-radius:50%;display:inline-block;box-sizing:border-box;animation: rotation 1s linear infinite; vertical-align:middle; margin-right:8px; display:none;}
+    @keyframes rotation {0% {transform: rotate(0deg)} 100% {transform: rotate(360deg)}}
+
+    #statusBadge { background: var(--input-bg); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1px solid var(--line);}
+
+    .hidden{display:none !important}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="top">
-      <div class="brand">
-        <h1>TripReady</h1>
-        <div class="sub">여행 준비를 대신 정리해드립니다. <b>상황에 맞춘 체크리스트</b>와 <b>출발 전 해야 할 일</b>을 설계해요.</div>
+
+<div class="wrap">
+  <div class="header">
+    <h1>TripReady</h1>
+    <div class="sub">설레는 여행, 복잡한 준비는 <b>TripReady</b>가 대신 정리해드립니다.<br>상황에 딱 맞는 체크리스트와 할 일을 받아보세요.</div>
+    <div class="pill">무료 MVP · 저장/로그인 없음</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>✈️ 여행 정보 입력</h2>
+
+      <div class="row">
+        <div>
+          <label for="destination">1) 여행지</label>
+          <input id="destination" placeholder="예) 오사카, 제주도, 다낭" />
+        </div>
+        <div>
+          <label for="tripType">2) 구분</label>
+          <select id="tripType">
+            <option value="국내">국내</option>
+            <option value="해외">해외</option>
+          </select>
+        </div>
       </div>
-      <div class="pill">무료 MVP · 저장/로그인 없음</div>
+
+      <div class="row">
+        <div>
+          <label for="nights">3) 기간</label>
+          <input id="nights" placeholder="예) 3박4일" />
+        </div>
+        <div>
+          <label for="startDate">4) 출발일 (선택)</label>
+          <input id="startDate" type="date" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="people">5) 인원 (선택)</label>
+          <input id="people" placeholder="예) 2명" />
+        </div>
+        <div>
+          <label for="season">6) 계절/시기 (선택)</label>
+          <input id="season" placeholder="예) 6월 장마철, 성수기" />
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <label>7) 교통수단 (중복 선택 가능)</label>
+      <div class="chips" id="transportChips">
+        <div class="chip" data-value="비행기">비행기</div>
+        <div class="chip" data-value="기차">기차</div>
+        <div class="chip" data-value="자차">자차</div>
+        <div class="chip" data-value="렌트카">렌트카</div>
+        <div class="chip" data-value="버스/기타">버스/기타</div>
+      </div>
+
+      <label for="notes">8) 특별 상황 / 메모</label>
+      <textarea id="notes" placeholder="예) 아이 동반, 부모님 환갑 여행, 비건 식단 필요, 짐 많음, 새벽 비행기 등..."></textarea>
+
+      <div class="actions">
+        <button class="btn btnPrimary" id="build">
+           <span class="loader" id="loader"></span>
+           <span id="btnText">준비 설계하기</span>
+        </button>
+        <button class="btn btnGhost" id="sample">예시 데이터 채우기</button>
+      </div>
     </div>
 
-    <div class="grid">
-      <div class="card">
-        <h2>여행 정보</h2>
+    <div class="card" id="resultCardBox">
+      <h2>📋 설계 리포트 <span id="statusBadge" style="color:var(--text-soft)">대기 중</span></h2>
 
-        <div class="row">
-          <div>
-            <label for="destination">1) 여행지</label>
-            <input id="destination" placeholder="예) 오사카, 제주도, 방콕" />
-          </div>
-          <div>
-            <label for="tripType">2) 국내/해외</label>
-            <select id="tripType">
-              <option value="국내">국내</option>
-              <option value="해외">해외</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="row" style="margin-top:10px">
-          <div>
-            <label for="nights">3) 기간</label>
-            <input id="nights" placeholder="예) 3박4일" />
-          </div>
-          <div>
-            <label for="startDate">4) 출발 날짜 (선택)</label>
-            <input id="startDate" type="date" />
-          </div>
-        </div>
-
-        <div class="row" style="margin-top:10px">
-          <div>
-            <label for="people">5) 인원 (선택)</label>
-            <input id="people" placeholder="예) 2명" />
-          </div>
-          <div>
-            <label for="season">6) 계절/시기 (선택)</label>
-            <input id="season" placeholder="예) 6월(장마), 겨울, 성수기" />
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <label>7) 교통수단</label>
-        <div class="chips" id="transportChips">
-          <button class="chip" data-value="비행기">비행기</button>
-          <button class="chip" data-value="기차">기차</button>
-          <button class="chip" data-value="자차">자차</button>
-          <button class="chip" data-value="렌트카">렌트카</button>
-          <button class="chip" data-value="버스/기타">버스/기타</button>
-        </div>
-
-        <div class="divider"></div>
-
-        <label for="notes">8) 특별 상황/메모 (선택)</label>
-        <textarea id="notes" placeholder="예) 아이 동반, 부모님 동행, 비건/알러지, 촬영장비 있음, 새벽 비행, 공항 픽업 필요 등"></textarea>
-
-        <div class="actions">
-          <button class="btn btnPrimary" id="build">준비 설계하기</button>
-          <button class="btn" id="sample">샘플 채우기</button>
-          <span class="tiny" id="status"></span>
-        </div>
-
-        <div class="footer">
-          ⚠️ 정보는 참고용이며, 현지 규정/항공사/숙소 정책 등은 최종 확인이 필요합니다.
-          (다음 버전: 간단 일정 초안 생성 기능 예정)
-        </div>
+      <div id="idleState" style="text-align:center; padding:60px 0; color:var(--text-soft)">
+        <img src="https://cdn-icons-png.flaticon.com/512/201/201623.png" width="64" style="opacity:0.2; margin-bottom: 20px;">
+        <p style="font-size: 16px; margin: 0;">여행 정보를 입력하고<br><b>[준비 설계하기]</b>를 눌러주세요.</p>
       </div>
 
-      <div class="card">
-        <div class="sectionTitle">
-          <h2 style="margin:0">Trip Plan</h2>
-          <span class="badge" id="badge">대기 중</span>
+      <div class="result-area" id="resultArea">
+        <div class="block" style="background:#f0f9ff; border-color:#bae6fd;">
+          <h3 style="color:#0284c7;">💡 한 줄 요약</h3>
+          <p id="resSummary" style="color:#0c4a6e; font-weight:500;"></p>
         </div>
 
-        <div class="result" id="result" style="margin-top:12px">
+        <div class="cols">
           <div class="block">
-            <h3>안내</h3>
-            <p class="tiny">왼쪽에 여행 정보를 입력하고 "준비 설계하기"를 눌러주세요.</p>
+            <h3>📅 할 일 타임라인</h3>
+            <div id="resTimeline"></div>
+          </div>
+
+          <div class="block" style="border-color:#fecaca; background:#fff5f5;">
+            <h3 style="color:#dc2626;">⚠️ 놓치기 쉬운 것</h3>
+            <div id="resMisses"></div>
           </div>
         </div>
 
-        <div class="actions" style="margin-top:12px">
-          <button class="btn btnGhost hidden" id="copyText">텍스트로 복사</button>
-          <button class="btn btnGhost hidden" id="copyJson">JSON 복사</button>
-          <button class="btn btnGhost hidden" id="reset">초기화</button>
+        <div class="block">
+          <h3>✅ 준비물 체크리스트</h3>
+          <div id="resChecklist"></div>
         </div>
 
-        <div class="footer">
-          개발 메모: 결과는 서버리스 함수 <span class="mono">/api/analyze</span>에서 생성됩니다.
+        <div class="divider"></div>
+
+        <div class="scoreRow">
+          <div class="scoreCard"><div class="scoreLabel">준비 난이도</div><div class="scoreVal" id="scComplex">-</div></div>
+          <div class="scoreCard"><div class="scoreLabel">리스크 주의</div><div class="scoreVal" id="scRisk">-</div></div>
+          <div class="scoreCard"><div class="scoreLabel">빠뜨림 주의</div><div class="scoreVal" id="scForget">-</div></div>
+          <div class="scoreCard"><div class="scoreLabel">시작 추천</div><div class="scoreVal" id="scStart">-</div></div>
+        </div>
+
+        <div class="actions" style="margin-top:24px;">
+          <button class="btn btnGhost hidden" id="copyText">📝 텍스트로 전체 복사</button>
+          <button class="btn btnGhost hidden" id="reset" style="border-color:#fee2e2; color:#ef4444;">초기화</button>
+        </div>
+
+        <div style="margin-top:20px; font-size:12px; color:var(--text-soft); text-align:center;">
+            * 본 결과는 AI 설계를 바탕으로 하며, 항공사/국가별 최신 규정은 반드시 재확인이 필요합니다.
         </div>
       </div>
     </div>
   </div>
+</div>
 
 <script>
 (() => {
@@ -170,6 +232,7 @@
     lastText: null
   };
 
+  // 칩 선택 로직
   const chips = Array.from(document.querySelectorAll('#transportChips .chip'));
   chips.forEach(ch => {
     ch.addEventListener('click', () => {
@@ -184,18 +247,24 @@
     });
   });
 
+  // 샘플 채우기
   $('sample').addEventListener('click', () => {
     $('destination').value = "오사카";
     $('tripType').value = "해외";
     $('nights').value = "3박4일";
     $('people').value = "2명";
-    $('season').value = "6월(장마)";
-    $('notes').value = "커플 여행, 새벽 비행, 유심/이심 필요, 렌트카는 안 함";
-    // transport
+    $('season').value = "6월(장마철)";
+    $('notes').value = "커플 여행, 새벽 비행기라 피곤할 듯, 유심/이심 필요. 많이 걸을 예정.";
+
+    // chips update
     state.transports = new Set(["비행기", "버스/기타"]);
     chips.forEach(x => x.dataset.on = state.transports.has(x.dataset.value) ? "1" : "0");
+
+    // 스크롤 이동
+    $('build').scrollIntoView({behavior: "smooth", block: "center"});
   });
 
+  // 초기화
   $('reset').addEventListener('click', () => {
     $('destination').value = "";
     $('tripType').value = "국내";
@@ -208,43 +277,24 @@
     chips.forEach(x => x.dataset.on = "0");
     state.lastJson = null;
     state.lastText = null;
-    renderIdle();
+
+    $('resultArea').classList.add('hidden');
+    $('idleState').style.display = 'block';
+    $('statusBadge').innerText = "대기 중";
+    $('statusBadge').style.color = "var(--text-soft)";
+    $('statusBadge').style.background = "var(--input-bg)";
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  $('copyJson').addEventListener('click', async () => {
-    if (!state.lastJson) return;
-    await navigator.clipboard.writeText(JSON.stringify(state.lastJson, null, 2));
-    setStatus("JSON을 복사했어요.");
-    setTimeout(() => setStatus(""), 1400);
-  });
-
+  // 텍스트 복사
   $('copyText').addEventListener('click', async () => {
     if (!state.lastText) return;
     await navigator.clipboard.writeText(state.lastText);
-    setStatus("텍스트를 복사했어요.");
-    setTimeout(() => setStatus(""), 1400);
+    const originBtnText = $('copyText').innerText;
+    $('copyText').innerText = "✅ 복사 완료!";
+    setTimeout(() => $('copyText').innerText = originBtnText, 2000);
   });
-
-  function setBadge(text, tone="ok"){
-    const b = $('badge');
-    b.textContent = text;
-    b.classList.remove('warn','ok');
-    b.classList.add(tone);
-  }
-  function setStatus(text){ $('status').textContent = text; }
-
-  function renderIdle(){
-    setBadge("대기 중", "ok");
-    $('result').innerHTML = `
-      <div class="block">
-        <h3>안내</h3>
-        <p class="tiny">왼쪽에 여행 정보를 입력하고 "준비 설계하기"를 눌러주세요.</p>
-      </div>
-    `;
-    $('copyJson').classList.add('hidden');
-    $('copyText').classList.add('hidden');
-    $('reset').classList.add('hidden');
-  }
 
   function escapeHtml(s){
     return String(s ?? "")
@@ -255,170 +305,162 @@
       .replaceAll("'","&#039;");
   }
 
-  function list(items){
-    if (!items || !items.length) return `<p class="tiny">-</p>`;
-    return `<ul class="list">${items.map(x => `<li>${escapeHtml(x)}</li>`).join("")}</ul>`;
+  function list(items, color){
+    if (!items || !items.length) return `<p class="tiny" style="color:#94a3b8">-</p>`;
+    const style = color ? `style="color:${color}"` : "";
+    return `<ul class="list" ${style}>${items.map(x => `<li>${escapeHtml(x)}</li>`).join("")}</ul>`;
   }
 
-  function scoreCard(label, value){
-    return `
-      <div class="scoreCard">
-        <div class="scoreLabel">${label}</div>
-        <div class="scoreVal">${escapeHtml(value)}</div>
-      </div>
-    `;
-  }
-
+  // 텍스트 빌더
   function buildCopyText(data){
     const lines = [];
-    lines.push(`TripReady · 여행 준비 설계`);
-    lines.push(`- 여행지: ${data.trip?.destination ?? ""} (${data.trip?.trip_type ?? ""})`);
-    lines.push(`- 기간: ${data.trip?.duration ?? ""}`);
-    if (data.trip?.start_date) lines.push(`- 출발일: ${data.trip.start_date}`);
-    if (data.trip?.people) lines.push(`- 인원: ${data.trip.people}`);
-    if (data.trip?.season) lines.push(`- 시기: ${data.trip.season}`);
-    if (data.trip?.transport?.length) lines.push(`- 교통: ${data.trip.transport.join(", ")}`);
+    lines.push(`[TripReady] 여행 준비 설계 리포트`);
+    lines.push(`📍 여행지: ${data.trip?.destination} (${data.trip?.trip_type})`);
+    lines.push(`🗓 기간: ${data.trip?.duration}`);
+    lines.push(`💡 요약: ${data.summary}`);
     lines.push("");
-    lines.push(`[해야 할 일 타임라인]`);
+    lines.push(`──────────────`);
+    lines.push(`📅 [할 일 타임라인]`);
     const tl = data.timeline || {};
-    const keys = Object.keys(tl);
-    keys.forEach(k => {
-      lines.push(`- ${k}`);
-      (tl[k] || []).forEach(it => lines.push(`  • ${it}`));
+    Object.keys(tl).forEach(k => {
+      lines.push(`\n[${k}]`);
+      (tl[k] || []).forEach(it => lines.push(`• ${it}`));
     });
     lines.push("");
-    lines.push(`[준비물 체크리스트]`);
+    lines.push(`──────────────`);
+    lines.push(`✅ [준비물 체크리스트]`);
     const cl = data.checklist || {};
     Object.keys(cl).forEach(cat => {
-      lines.push(`- ${cat}`);
-      (cl[cat] || []).forEach(it => lines.push(`  • ${it}`));
+      lines.push(`\n[${cat}]`);
+      (cl[cat] || []).forEach(it => lines.push(`• ${it}`));
     });
     lines.push("");
-    lines.push(`[놓치기 쉬운 것]`);
-    (data.common_misses || []).forEach(it => lines.push(`- ${it}`));
+    lines.push(`⚠️ [놓치기 쉬운 것]`);
+    (data.common_misses || []).forEach(it => lines.push(`• ${it}`));
     lines.push("");
-    lines.push(data.disclaimer || "참고용 설계이며, 현지/항공사/숙소 정책은 최종 확인이 필요합니다.");
+    lines.push(`(본 내용은 참고용이며, 최종 확인이 필요합니다)`);
     return lines.join("\n");
   }
 
+  // 렌더링
   function renderResult(data){
-    // copy text
     state.lastText = buildCopyText(data);
 
+    $('idleState').style.display = 'none';
+    $('resultArea').classList.remove('hidden');
+    $('resultArea').style.display = 'block';
+
+    $('statusBadge').innerText = "설계 완료";
+    $('statusBadge').style.color = "#16a34a"; // green
+    $('statusBadge').style.background = "#dcfce7";
+
+    // Summary
+    $('resSummary').innerText = data.summary;
+
+    // Timeline
     const tl = data.timeline || {};
+    if (Object.keys(tl).length) {
+      $('resTimeline').innerHTML = Object.keys(tl).map(k => `
+        <div style="margin-top:12px">
+          <div style="font-size:13px; color:var(--accent); font-weight:700; margin-bottom:6px;">${escapeHtml(k)}</div>
+          ${list(tl[k])}
+        </div>
+      `).join("");
+    } else {
+      $('resTimeline').innerHTML = `<p style="font-size:14px; color:var(--text-soft)">타임라인 정보가 없습니다.</p>`;
+    }
+
+    // Misses
+    $('resMisses').innerHTML = list(data.common_misses || [], "#b91c1c");
+
+    // Checklist
     const cl = data.checklist || {};
-
-    $('result').innerHTML = `
-      <div class="block">
-        <h3>한 줄 요약 <span class="tiny">따뜻하지만 현실적으로</span></h3>
-        <p>${escapeHtml(data.summary || "")}</p>
-      </div>
-
-      <div class="cols">
-        <div class="block">
-          <h3>해야 할 일 타임라인</h3>
-          ${Object.keys(tl).length ? Object.keys(tl).map(k => `
-            <div style="margin-top:10px">
-              <div class="tiny" style="margin-bottom:6px;color:#cfe0ff">${escapeHtml(k)}</div>
-              ${list(tl[k])}
-            </div>
-          `).join("") : `<p class="tiny">출발일이 없으면 일반 타임라인으로 구성돼요.</p>`}
+    if (Object.keys(cl).length) {
+      $('resChecklist').innerHTML = Object.keys(cl).map(cat => `
+        <div style="margin-top:14px">
+          <div style="font-size:13px; color:#475569; font-weight:700; margin-bottom:6px; background:#f1f5f9; display:inline-block; padding:2px 8px; border-radius:4px;">${escapeHtml(cat)}</div>
+          ${list(cl[cat])}
         </div>
+      `).join("");
+    } else {
+      $('resChecklist').innerHTML = `<p style="font-size:14px; color:var(--text-soft)">체크리스트 정보가 없습니다.</p>`;
+    }
 
-        <div class="block">
-          <h3>놓치기 쉬운 것</h3>
-          ${list(data.common_misses || [])}
-        </div>
-      </div>
+    // Scores
+    $('scComplex').innerText = (data.scores?.prep_complexity ?? "-") + " / 10";
+    $('scRisk').innerText = (data.scores?.risk_level ?? "-") + " / 10";
+    $('scForget').innerText = (data.scores?.forget_risk ?? "-") + " / 10";
+    $('scStart').innerText = data.scores?.start_now ?? "-";
 
-      <div class="block">
-        <h3>준비물 체크리스트</h3>
-        ${Object.keys(cl).length ? Object.keys(cl).map(cat => `
-          <div style="margin-top:10px">
-            <div class="tiny" style="margin-bottom:6px;color:#cfe0ff">${escapeHtml(cat)}</div>
-            ${list(cl[cat])}
-          </div>
-        `).join("") : `<p class="tiny">체크리스트를 생성하지 못했어요. 입력을 조금 더 구체적으로 해주세요.</p>`}
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="scoreRow">
-        ${scoreCard("준비 난이도", `${data.scores?.prep_complexity ?? "-"} / 10`)}
-        ${scoreCard("리스크 주의도", `${data.scores?.risk_level ?? "-"} / 10`)}
-        ${scoreCard("빠뜨림 가능성", `${data.scores?.forget_risk ?? "-"} / 10`)}
-        ${scoreCard("추천 준비 시작", data.scores?.start_now ?? "-")}
-      </div>
-
-      <div class="footer">${escapeHtml(data.disclaimer || "")}</div>
-    `;
-
-    $('copyJson').classList.remove('hidden');
+    // Buttons
     $('copyText').classList.remove('hidden');
     $('reset').classList.remove('hidden');
-    setBadge("설계 완료", "ok");
+
+    // Scroll logic for mobile
+    if(window.innerWidth < 900) {
+        $('resultCardBox').scrollIntoView({behavior: "smooth", block: "start"});
+    }
   }
 
+  // API 호출
   $('build').addEventListener('click', async () => {
     const destination = $('destination').value.trim();
     const tripType = $('tripType').value;
     const duration = $('nights').value.trim();
-    const startDate = $('startDate').value; // ISO yyyy-mm-dd or ""
+    const startDate = $('startDate').value;
     const people = $('people').value.trim();
     const season = $('season').value.trim();
     const notes = $('notes').value.trim();
     const transport = Array.from(state.transports);
 
     if (!destination || !duration) {
-      setBadge("입력이 필요해요", "warn");
-      setStatus("여행지와 기간은 꼭 입력해주세요.");
+      alert("💡 여행지와 기간은 필수 입력 항목입니다!");
       return;
     }
 
-    setBadge("설계 중…", "ok");
-    setStatus("잠시만요…");
+    // Loading UX
+    const btn = $('build');
+    const loader = $('loader');
+    const btnText = $('btnText');
 
-    const payload = {
-      destination,
-      tripType,
-      duration,
-      startDate: startDate || null,
-      people: people || null,
-      season: season || null,
-      transport,
-      notes: notes || null
-    };
+    btn.disabled = true;
+    loader.style.display = 'inline-block';
+    btnText.innerText = "여행 준비 설계 중...";
+    $('statusBadge').innerText = "분석 중...";
+    $('statusBadge').style.color = "var(--accent)";
+    $('statusBadge').style.background = "var(--accent-soft)";
+
+    if(window.innerWidth < 900) {
+        $('resultCardBox').scrollIntoView({behavior: "smooth", block: "start"});
+    }
 
     try {
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type":"application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({
+          destination, tripType, duration, startDate, people, season, transport, notes
+        })
       });
 
-      const text = await res.text();
-      if (!res.ok) throw new Error(text || ("HTTP " + res.status));
+      if (!res.ok) throw new Error("서버 통신 오류");
+      const data = await res.json();
 
-      const data = JSON.parse(text);
-      state.lastJson = data;
+      // JSON 파싱 실패 방어
+      if(data.error) throw new Error(data.error);
+
       renderResult(data);
-      setStatus("");
+
     } catch (err) {
       console.error(err);
-      setBadge("에러", "warn");
-      $('result').innerHTML = `
-        <div class="block">
-          <h3>오류가 발생했어요</h3>
-          <p class="tiny">/api/analyze 설정 또는 API 키를 확인해주세요.</p>
-          <p class="tiny mono">${escapeHtml(err?.message || String(err))}</p>
-        </div>
-      `;
-      setStatus("");
+      alert("오류가 발생했습니다: " + err.message);
+      $('statusBadge').innerText = "오류 발생";
+      $('statusBadge').style.color = "#dc2626";
+    } finally {
+      btn.disabled = false;
+      loader.style.display = 'none';
+      btnText.innerText = "준비 설계하기";
     }
   });
 
-  renderIdle();
-})();
-</script>
-</body>
-</html>
+})();</script></body></html>
