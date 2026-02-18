@@ -3,330 +3,422 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>선택연구소 | 결정장애 치유 프로젝트</title>
-  <meta name="description" content="정답을 주지 않습니다. 당신의 마음과 선택을 정리해드립니다." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
+  <title>TripReady</title>
   <style>
-    /* 밝고 깨끗한 테마 변수 정의 */
-    :root {
-      --bg: #f5f7fa;           /* 배경: 아주 밝은 회색 */
-      --card: #ffffff;         /* 카드: 깨끗한 흰색 */
-      --text: #1a1f2c;         /* 본문 텍스트: 진한 챠콜 */
-      --muted: #64748b;        /* 보조 텍스트: 중간 회색 */
-      --line: #e2e8f0;         /* 테두리 선: 연한 회색 */
-      --accent: #0066ff;       /* 포인트 컬러: 선명한 블루 */
-      --accent-soft: #e6f0ff;  /* 포인트 배경색 (연한 블루) */
-      --input-bg: #f8fafc;     /* 입력창 배경 */
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); /* 부드러운 그림자 */
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025); /* 큰 그림자 */
-    }
-
+    :root { --bg:#0b0f17; --card:#121a26; --muted:#9fb0c8; --text:#eaf0ff; --line:#23324a; --accent:#7aa7ff; }
     *{box-sizing:border-box}
-    body{margin:0;font-family:'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:var(--bg); color:var(--text); line-height:1.6}
-    .wrap{max-width:800px;margin:0 auto;padding:60px 20px 100px}
-
-    /* Header */
-    .header{text-align:center;margin-bottom:40px}
-    h1{margin:0 0 12px;font-size:32px;font-weight:800;letter-spacing:-0.5px;color:var(--text);}
-    .sub{color:var(--muted);font-size:16px; word-break: keep-all;}
-    .pill{display:inline-block;margin-top:16px;padding:6px 14px;border:1px solid var(--line);border-radius:30px;font-size:12px;color:var(--muted);background:#fff; font-weight: 600;}
-
-    /* Grid Layout */
-    .grid{display:grid;gap:30px;grid-template-columns:1fr; align-items: start;}
-    @media(min-width:768px){.grid{grid-template-columns:1fr 1fr}}
-
-    /* Card Styles */
-    .card{background:var(--card);border-radius:24px;padding:32px;box-shadow:var(--shadow-lg); border:1px solid rgba(255,255,255,0.5);}
-    .card h2{margin:0 0 24px;font-size:20px;color:var(--text);display:flex;align-items:center;justify-content:space-between; font-weight: 700;}
-
-    /* Inputs */
-    label{display:block;color:var(--text);font-size:14px;margin-bottom:10px;font-weight:700}
-    textarea,input{width:100%;background:var(--input-bg);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:16px;font-size:15px;outline:none;transition:all 0.2s ease; font-family: inherit;}
-    textarea::placeholder, input::placeholder {color: #a0aec0;}
-    textarea:focus,input:focus{border-color:var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); background: #fff;}
-    textarea{min-height:140px;resize:none}
-
-    /* Options & Emotions */
-    .options{display:flex;flex-direction:column;gap:12px;margin-bottom:30px}
-    .emotions{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:30px}
-    .chip{padding:10px 18px;border-radius:30px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;transition:all 0.2s;font-size:14px; font-weight: 600;}
-    .chip:hover{background:var(--input-bg); border-color: #cbd5e1;}
-    .chip[data-on="1"]{border-color:var(--accent);background:var(--accent);color:#fff;box-shadow: 0 4px 6px rgba(0, 102, 255, 0.2);}
-
-    /* Buttons */
-    .btn{width:100%;padding:16px;border-radius:14px;border:none;font-weight:700;font-size:16px;cursor:pointer;transition:all 0.2s;}
-    .btnPrimary{background:var(--accent);color:#fff; box-shadow: 0 4px 6px rgba(0, 102, 255, 0.25);}
-    .btnPrimary:hover{background:#0052cc; transform: translateY(-1px); box-shadow: 0 6px 8px rgba(0, 102, 255, 0.3);}
-    .btnPrimary:active{transform: translateY(0);}
-    .btnPrimary:disabled{background:var(--line);color:var(--muted);cursor:not-allowed; box-shadow: none; transform: none;}
-    .btnGhost{background:transparent;border:2px solid var(--line);color:var(--muted);margin-top:12px}
-    .btnGhost:hover{border-color:var(--muted);color:var(--text); background: var(--input-bg);}
-
-    /* Results */
-    .result-area{display:none} /* JS로 토글 */
-    .block{background:var(--input-bg);border-radius:16px;padding:20px;margin-bottom:16px;border:1px solid var(--line);}
-    .block h3{margin:0 0 10px;font-size:13px;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px; font-weight: 700;}
-    .block p, .block li{font-size:15px;color:var(--text);margin:0;line-height:1.65}
-    .block ul{padding-left:20px;margin:0}
-    .block li {margin-bottom: 6px;}
-
-    /* Scores */
-    .scores{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
-    .scoreCard{background:#fff;padding:16px;border-radius:16px;text-align:center; border: 1px solid var(--line); box-shadow: var(--shadow);}
-    .scoreLabel{font-size:12px;color:var(--muted);margin-bottom:6px; font-weight: 600;}
-    .scoreVal{font-size:22px;font-weight:800;color:var(--accent);}
-
-    /* Share Box */
-    .share-box{background:linear-gradient(135deg, var(--accent) 0%, #0047b3 100%);border-radius:16px;padding:24px;text-align:center;margin-bottom:24px; color: #fff; box-shadow: 0 8px 16px rgba(0, 102, 255, 0.2);}
-    .share-text{font-size:18px;font-weight:700;margin-bottom:16px;word-break:keep-all; line-height: 1.4;}
-    .copy-btn{background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;padding:8px 16px;border-radius:30px;font-size:13px;cursor:pointer; font-weight: 600; transition: 0.2s;}
-    .copy-btn:hover {background:rgba(255,255,255,0.3);}
-
-    /* Loader */
-    .loader {width:20px;height:20px;border:3px solid rgba(255,255,255,0.3);border-bottom-color:#fff;border-radius:50%;display:inline-block;box-sizing:border-box;animation: rotation 1s linear infinite; vertical-align:middle; margin-right:8px; display:none;}
-    @keyframes rotation {0% {transform: rotate(0deg)} 100% {transform: rotate(360deg)}}
-
-    /* Status Badge */
-    #statusBadge { background: var(--input-bg); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1px solid var(--line);}
-
-    .hidden{display:none !important}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Noto Sans KR,Apple SD Gothic Neo,sans-serif;background:linear-gradient(180deg,#0b0f17,#070a10);color:var(--text)}
+    .wrap{max-width:1020px;margin:0 auto;padding:28px 18px 64px}
+    .top{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+    .brand{display:flex;flex-direction:column;gap:6px}
+    h1{margin:0;font-size:26px;letter-spacing:-0.3px}
+    .sub{color:var(--muted);font-size:14px;line-height:1.45}
+    .pill{border:1px solid var(--line);color:var(--muted);padding:8px 10px;border-radius:999px;font-size:12px}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}
+    @media(min-width:900px){.grid{grid-template-columns:1.05fr .95fr}}
+    .card{background:rgba(18,26,38,.92);border:1px solid rgba(35,50,74,.85);border-radius:16px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .card h2{margin:0 0 12px;font-size:16px;color:#dbe7ff}
+    label{display:block;color:var(--muted);font-size:13px;margin-bottom:8px}
+    textarea,input,select{width:100%;background:#0c1320;border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px 12px;font-size:14px;outline:none}
+    textarea{min-height:98px;resize:vertical}
+    input,select{height:42px}
+    .row{display:flex;gap:10px}
+    .row>*{flex:1}
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{padding:9px 10px;border-radius:999px;border:1px solid var(--line);background:#0c1320;color:#cfe0ff;font-size:13px;cursor:pointer}
+    .chip[data-on="1"]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(122,167,255,.15)}
+    .btn{background:#0c1320;border:1px solid var(--line);color:var(--text);border-radius:12px;padding:10px 12px;font-size:14px;cursor:pointer}
+    .btn:hover{border-color:#35507a}
+    .btnPrimary{background:linear-gradient(180deg,#2a4c86,#203a69);border-color:#3a5da3}
+    .btnPrimary:hover{filter:brightness(1.05)}
+    .btnGhost{background:transparent}
+    .tiny{font-size:12px;color:var(--muted)}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}
+    .divider{height:1px;background:rgba(35,50,74,.9);margin:14px 0}
+    .result{display:flex;flex-direction:column;gap:12px}
+    .sectionTitle{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .badge{font-size:12px;color:#cfe0ff;border:1px solid rgba(122,167,255,.35);background:rgba(122,167,255,.08);padding:6px 9px;border-radius:999px}
+    .block{background:#0c1320;border:1px solid var(--line);border-radius:14px;padding:12px}
+    .block h3{margin:0 0 8px;font-size:13px;color:#dbe7ff;display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .block p{margin:0;color:#d6e2ff;line-height:1.55;font-size:14px;white-space:pre-wrap}
+    .list{margin:0;padding-left:18px;color:#d6e2ff;line-height:1.55;font-size:14px}
+    .cols{display:grid;grid-template-columns:1fr;gap:10px}
+    @media(min-width:700px){.cols{grid-template-columns:1fr 1fr}}
+    .scoreRow{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    @media(min-width:540px){.scoreRow{grid-template-columns:repeat(4,1fr)}}
+    .scoreCard{background:#0c1320;border:1px solid var(--line);border-radius:14px;padding:12px}
+    .scoreLabel{font-size:12px;color:var(--muted);margin-bottom:6px}
+    .scoreVal{font-size:20px;font-weight:700;letter-spacing:-0.4px}
+    .warn{color:#ffd6a6}
+    .ok{color:#bfe5ff}
+    .footer{margin-top:14px;color:var(--muted);font-size:12px;line-height:1.45}
+    .hidden{display:none}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
   </style>
 </head>
 <body>
-
-<div class="wrap">
-  <div class="header">
-    <h1>선택연구소</h1>
-    <div class="sub">정답을 주지 않습니다. 대신, 당신의 마음과 선택을 <b>명쾌하게 정리</b>해드립니다.</div>
-    <div class="pill">무료 MVP · 저장/로그인 없음</div>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <h2>고민 입력</h2>
-
-      <label>1. 지금 어떤 고민을 하고 계신가요?</label>
-      <textarea id="situation" placeholder="구체적인 상황과 고민되는 지점을 적어주세요. (예: 이직 제안을 받았는데 연봉은 높지만 너무 바쁠 것 같아 고민이에요...)"></textarea>
-
-      <label style="margin-top:24px">2. 고려 중인 선택지 (A vs B)</label>
-      <div class="options">
-        <input id="optA" placeholder="선택 A 입력 (예: 이직한다)">
-        <input id="optB" placeholder="선택 B 입력 (예: 현 직장에 남는다)">
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <h1>TripReady</h1>
+        <div class="sub">여행 준비를 대신 정리해드립니다. <b>상황에 맞춘 체크리스트</b>와 <b>출발 전 해야 할 일</b>을 설계해요.</div>
       </div>
-
-      <label style="margin-top:24px">3. 현재 가장 크게 드는 감정은?</label>
-      <div class="emotions">
-        <div class="chip" data-val="불안">불안</div>
-        <div class="chip" data-val="설렘">설렘</div>
-        <div class="chip" data-val="혼란">혼란</div>
-        <div class="chip" data-val="답답함">답답함</div>
-        <div class="chip" data-val="두려움">두려움</div>
-      </div>
-
-      <div style="margin-top: 32px;">
-        <button class="btn btnPrimary" id="analyzeBtn">
-            <span class="loader" id="loader"></span>
-            <span id="btnText">분석하기</span>
-        </button>
-        <button class="btn btnGhost" id="sampleBtn">예시 데이터로 체험하기</button>
-      </div>
+      <div class="pill">무료 MVP · 저장/로그인 없음</div>
     </div>
 
-    <div class="card" id="resultCardBox">
-      <h2>분석 결과 <span id="statusBadge" style="color:var(--muted)">대기 중</span></h2>
+    <div class="grid">
+      <div class="card">
+        <h2>여행 정보</h2>
 
-      <div id="idleState" style="text-align:center; padding:60px 0; color:var(--muted)">
-        <img src="https://cdn-icons-png.flaticon.com/512/10473/10473558.png" width="64" style="opacity:0.3; margin-bottom: 20px;">
-        <p style="font-size: 16px; margin: 0;">왼쪽에 고민을 입력하고<br><b>[분석하기]</b> 버튼을 눌러주세요.</p>
+        <div class="row">
+          <div>
+            <label for="destination">1) 여행지</label>
+            <input id="destination" placeholder="예) 오사카, 제주도, 방콕" />
+          </div>
+          <div>
+            <label for="tripType">2) 국내/해외</label>
+            <select id="tripType">
+              <option value="국내">국내</option>
+              <option value="해외">해외</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label for="nights">3) 기간</label>
+            <input id="nights" placeholder="예) 3박4일" />
+          </div>
+          <div>
+            <label for="startDate">4) 출발 날짜 (선택)</label>
+            <input id="startDate" type="date" />
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label for="people">5) 인원 (선택)</label>
+            <input id="people" placeholder="예) 2명" />
+          </div>
+          <div>
+            <label for="season">6) 계절/시기 (선택)</label>
+            <input id="season" placeholder="예) 6월(장마), 겨울, 성수기" />
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <label>7) 교통수단</label>
+        <div class="chips" id="transportChips">
+          <button class="chip" data-value="비행기">비행기</button>
+          <button class="chip" data-value="기차">기차</button>
+          <button class="chip" data-value="자차">자차</button>
+          <button class="chip" data-value="렌트카">렌트카</button>
+          <button class="chip" data-value="버스/기타">버스/기타</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <label for="notes">8) 특별 상황/메모 (선택)</label>
+        <textarea id="notes" placeholder="예) 아이 동반, 부모님 동행, 비건/알러지, 촬영장비 있음, 새벽 비행, 공항 픽업 필요 등"></textarea>
+
+        <div class="actions">
+          <button class="btn btnPrimary" id="build">준비 설계하기</button>
+          <button class="btn" id="sample">샘플 채우기</button>
+          <span class="tiny" id="status"></span>
+        </div>
+
+        <div class="footer">
+          ⚠️ 정보는 참고용이며, 현지 규정/항공사/숙소 정책 등은 최종 확인이 필요합니다.
+          (다음 버전: 간단 일정 초안 생성 기능 예정)
+        </div>
       </div>
 
-      <div id="resultArea" class="result-area">
-
-        <div class="share-box">
-          <div class="share-text" id="resShare">"결과는..."</div>
-          <button class="copy-btn" id="copyShareBtn">📋 한 줄 요약 복사</button>
+      <div class="card">
+        <div class="sectionTitle">
+          <h2 style="margin:0">Trip Plan</h2>
+          <span class="badge" id="badge">대기 중</span>
         </div>
 
-        <div class="block">
-          <h3>🧐 감정의 핵심</h3>
-          <p id="resEmotion"></p>
+        <div class="result" id="result" style="margin-top:12px">
+          <div class="block">
+            <h3>안내</h3>
+            <p class="tiny">왼쪽에 여행 정보를 입력하고 "준비 설계하기"를 눌러주세요.</p>
+          </div>
         </div>
 
-        <div class="block">
-          <h3>💡 발견된 패턴</h3>
-          <p id="resPattern"></p>
+        <div class="actions" style="margin-top:12px">
+          <button class="btn btnGhost hidden" id="copyText">텍스트로 복사</button>
+          <button class="btn btnGhost hidden" id="copyJson">JSON 복사</button>
+          <button class="btn btnGhost hidden" id="reset">초기화</button>
         </div>
 
-        <div class="block" style="border-color: #fecaca; background: #fff5f5;">
-          <h3 style="color: #dc2626;">⚠️ 체크할 리스크</h3>
-          <ul id="resRisks" style="color: #991b1b;"></ul>
+        <div class="footer">
+          개발 메모: 결과는 서버리스 함수 <span class="mono">/api/analyze</span>에서 생성됩니다.
         </div>
-
-        <div class="block" style="border-color: #bbf7d0; background: #f0fdf4;">
-          <h3 style="color: #16a34a;">🚀 추천 가이드</h3>
-          <p id="resRec" style="color: #166534; font-weight: 600;"></p>
-        </div>
-
-        <div class="block">
-          <h3>💌 미래의 메시지</h3>
-          <p id="resFuture"></p>
-        </div>
-
-        <div class="scores">
-          <div class="scoreCard"><div class="scoreLabel">실행 가능성</div><div class="scoreVal" id="scFeas">-</div></div>
-          <div class="scoreCard"><div class="scoreLabel">감정 개입도</div><div class="scoreVal" id="scEmo">-</div></div>
-          <div class="scoreCard"><div class="scoreLabel">후회 확률</div><div class="scoreVal" id="scReg">-</div></div>
-          <div class="scoreCard"><div class="scoreLabel">리스크 민감도</div><div class="scoreVal" id="scRisk">-</div></div>
-        </div>
-
-        <button class="btn btnGhost" id="resetBtn" style="margin-top:24px">다시 입력하기</button>
       </div>
     </div>
   </div>
-</div>
 
 <script>
-  const $ = (s) => document.querySelector(s);
-  let selectedEmotion = null;
+(() => {
+  const $ = (id) => document.getElementById(id);
 
-  // 감정 선택 로직
-  document.querySelectorAll('.chip').forEach(el => {
-    el.addEventListener('click', () => {
-      document.querySelectorAll('.chip').forEach(c => c.dataset.on = "0");
-      el.dataset.on = "1";
-      selectedEmotion = el.dataset.val;
+  const state = {
+    transports: new Set(),
+    lastJson: null,
+    lastText: null
+  };
+
+  const chips = Array.from(document.querySelectorAll('#transportChips .chip'));
+  chips.forEach(ch => {
+    ch.addEventListener('click', () => {
+      const v = ch.dataset.value;
+      if (state.transports.has(v)) {
+        state.transports.delete(v);
+        ch.dataset.on = "0";
+      } else {
+        state.transports.add(v);
+        ch.dataset.on = "1";
+      }
     });
   });
 
-  // 샘플 채우기
-  $('#sampleBtn').addEventListener('click', () => {
-    $('#situation').value = "연봉은 높은데 너무 바쁜 스타트업으로 이직할지, 지금 다니는 안정적인 대기업에 남을지 고민입니다. 결혼 준비도 해야 해서 시간이 필요한데 돈도 필요해요.";
-    $('#optA').value = "스타트업으로 이직 (도전, 고연봉, 바쁨)";
-    $('#optB').value = "대기업 잔류 (안정, 워라밸, 성장정체)";
-    document.querySelectorAll('.chip')[2].click(); // 혼란
-
-    // 사용자 편의를 위해 스크롤 이동
-    $('#analyzeBtn').scrollIntoView({behavior: "smooth", block: "center"});
+  $('sample').addEventListener('click', () => {
+    $('destination').value = "오사카";
+    $('tripType').value = "해외";
+    $('nights').value = "3박4일";
+    $('people').value = "2명";
+    $('season').value = "6월(장마)";
+    $('notes').value = "커플 여행, 새벽 비행, 유심/이심 필요, 렌트카는 안 함";
+    // transport
+    state.transports = new Set(["비행기", "버스/기타"]);
+    chips.forEach(x => x.dataset.on = state.transports.has(x.dataset.value) ? "1" : "0");
   });
 
-  // 초기화
-  $('#resetBtn').addEventListener('click', () => {
-    $('#resultArea').style.display = 'none';
-    $('#idleState').style.display = 'block';
-    $('#statusBadge').innerText = "대기 중";
-    $('#statusBadge').style.color = "var(--muted)";
-    $('#statusBadge').style.background = "var(--input-bg)";
-
-    $('#situation').value = "";
-    $('#optA').value = "";
-    $('#optB').value = "";
-    document.querySelectorAll('.chip').forEach(c => c.dataset.on = "0");
-    selectedEmotion = null;
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  $('reset').addEventListener('click', () => {
+    $('destination').value = "";
+    $('tripType').value = "국내";
+    $('nights').value = "";
+    $('startDate').value = "";
+    $('people').value = "";
+    $('season').value = "";
+    $('notes').value = "";
+    state.transports = new Set();
+    chips.forEach(x => x.dataset.on = "0");
+    state.lastJson = null;
+    state.lastText = null;
+    renderIdle();
   });
 
-  // 분석하기 버튼 클릭
-  $('#analyzeBtn').addEventListener('click', async () => {
-    const situation = $('#situation').value.trim();
-    const optA = $('#optA').value.trim();
-    const optB = $('#optB').value.trim();
+  $('copyJson').addEventListener('click', async () => {
+    if (!state.lastJson) return;
+    await navigator.clipboard.writeText(JSON.stringify(state.lastJson, null, 2));
+    setStatus("JSON을 복사했어요.");
+    setTimeout(() => setStatus(""), 1400);
+  });
 
-    if(!situation || !optA || !optB || !selectedEmotion) {
-      alert("💡 모든 내용을 입력하고 감정을 선택해주세요!");
+  $('copyText').addEventListener('click', async () => {
+    if (!state.lastText) return;
+    await navigator.clipboard.writeText(state.lastText);
+    setStatus("텍스트를 복사했어요.");
+    setTimeout(() => setStatus(""), 1400);
+  });
+
+  function setBadge(text, tone="ok"){
+    const b = $('badge');
+    b.textContent = text;
+    b.classList.remove('warn','ok');
+    b.classList.add(tone);
+  }
+  function setStatus(text){ $('status').textContent = text; }
+
+  function renderIdle(){
+    setBadge("대기 중", "ok");
+    $('result').innerHTML = `
+      <div class="block">
+        <h3>안내</h3>
+        <p class="tiny">왼쪽에 여행 정보를 입력하고 "준비 설계하기"를 눌러주세요.</p>
+      </div>
+    `;
+    $('copyJson').classList.add('hidden');
+    $('copyText').classList.add('hidden');
+    $('reset').classList.add('hidden');
+  }
+
+  function escapeHtml(s){
+    return String(s ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function list(items){
+    if (!items || !items.length) return `<p class="tiny">-</p>`;
+    return `<ul class="list">${items.map(x => `<li>${escapeHtml(x)}</li>`).join("")}</ul>`;
+  }
+
+  function scoreCard(label, value){
+    return `
+      <div class="scoreCard">
+        <div class="scoreLabel">${label}</div>
+        <div class="scoreVal">${escapeHtml(value)}</div>
+      </div>
+    `;
+  }
+
+  function buildCopyText(data){
+    const lines = [];
+    lines.push(`TripReady · 여행 준비 설계`);
+    lines.push(`- 여행지: ${data.trip?.destination ?? ""} (${data.trip?.trip_type ?? ""})`);
+    lines.push(`- 기간: ${data.trip?.duration ?? ""}`);
+    if (data.trip?.start_date) lines.push(`- 출발일: ${data.trip.start_date}`);
+    if (data.trip?.people) lines.push(`- 인원: ${data.trip.people}`);
+    if (data.trip?.season) lines.push(`- 시기: ${data.trip.season}`);
+    if (data.trip?.transport?.length) lines.push(`- 교통: ${data.trip.transport.join(", ")}`);
+    lines.push("");
+    lines.push(`[해야 할 일 타임라인]`);
+    const tl = data.timeline || {};
+    const keys = Object.keys(tl);
+    keys.forEach(k => {
+      lines.push(`- ${k}`);
+      (tl[k] || []).forEach(it => lines.push(`  • ${it}`));
+    });
+    lines.push("");
+    lines.push(`[준비물 체크리스트]`);
+    const cl = data.checklist || {};
+    Object.keys(cl).forEach(cat => {
+      lines.push(`- ${cat}`);
+      (cl[cat] || []).forEach(it => lines.push(`  • ${it}`));
+    });
+    lines.push("");
+    lines.push(`[놓치기 쉬운 것]`);
+    (data.common_misses || []).forEach(it => lines.push(`- ${it}`));
+    lines.push("");
+    lines.push(data.disclaimer || "참고용 설계이며, 현지/항공사/숙소 정책은 최종 확인이 필요합니다.");
+    return lines.join("\n");
+  }
+
+  function renderResult(data){
+    // copy text
+    state.lastText = buildCopyText(data);
+
+    const tl = data.timeline || {};
+    const cl = data.checklist || {};
+
+    $('result').innerHTML = `
+      <div class="block">
+        <h3>한 줄 요약 <span class="tiny">따뜻하지만 현실적으로</span></h3>
+        <p>${escapeHtml(data.summary || "")}</p>
+      </div>
+
+      <div class="cols">
+        <div class="block">
+          <h3>해야 할 일 타임라인</h3>
+          ${Object.keys(tl).length ? Object.keys(tl).map(k => `
+            <div style="margin-top:10px">
+              <div class="tiny" style="margin-bottom:6px;color:#cfe0ff">${escapeHtml(k)}</div>
+              ${list(tl[k])}
+            </div>
+          `).join("") : `<p class="tiny">출발일이 없으면 일반 타임라인으로 구성돼요.</p>`}
+        </div>
+
+        <div class="block">
+          <h3>놓치기 쉬운 것</h3>
+          ${list(data.common_misses || [])}
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>준비물 체크리스트</h3>
+        ${Object.keys(cl).length ? Object.keys(cl).map(cat => `
+          <div style="margin-top:10px">
+            <div class="tiny" style="margin-bottom:6px;color:#cfe0ff">${escapeHtml(cat)}</div>
+            ${list(cl[cat])}
+          </div>
+        `).join("") : `<p class="tiny">체크리스트를 생성하지 못했어요. 입력을 조금 더 구체적으로 해주세요.</p>`}
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="scoreRow">
+        ${scoreCard("준비 난이도", `${data.scores?.prep_complexity ?? "-"} / 10`)}
+        ${scoreCard("리스크 주의도", `${data.scores?.risk_level ?? "-"} / 10`)}
+        ${scoreCard("빠뜨림 가능성", `${data.scores?.forget_risk ?? "-"} / 10`)}
+        ${scoreCard("추천 준비 시작", data.scores?.start_now ?? "-")}
+      </div>
+
+      <div class="footer">${escapeHtml(data.disclaimer || "")}</div>
+    `;
+
+    $('copyJson').classList.remove('hidden');
+    $('copyText').classList.remove('hidden');
+    $('reset').classList.remove('hidden');
+    setBadge("설계 완료", "ok");
+  }
+
+  $('build').addEventListener('click', async () => {
+    const destination = $('destination').value.trim();
+    const tripType = $('tripType').value;
+    const duration = $('nights').value.trim();
+    const startDate = $('startDate').value; // ISO yyyy-mm-dd or ""
+    const people = $('people').value.trim();
+    const season = $('season').value.trim();
+    const notes = $('notes').value.trim();
+    const transport = Array.from(state.transports);
+
+    if (!destination || !duration) {
+      setBadge("입력이 필요해요", "warn");
+      setStatus("여행지와 기간은 꼭 입력해주세요.");
       return;
     }
 
-    // 로딩 상태 전환
-    const btn = $('#analyzeBtn');
-    const loader = $('#loader');
-    const btnText = $('#btnText');
+    setBadge("설계 중…", "ok");
+    setStatus("잠시만요…");
 
-    btn.disabled = true;
-    loader.style.display = 'inline-block';
-    btnText.innerText = "열심히 분석 중...";
-    $('#statusBadge').innerText = "분석 진행 중...";
-    $('#statusBadge').style.color = "var(--accent)";
-    $('#statusBadge').style.background = "var(--accent-soft)";
-
-    // 모바일에서 결과 영역이 보이도록 살짝 스크롤
-    if(window.innerWidth < 768) {
-        $('#resultCardBox').scrollIntoView({behavior: "smooth", block: "start"});
-    }
+    const payload = {
+      destination,
+      tripType,
+      duration,
+      startDate: startDate || null,
+      people: people || null,
+      season: season || null,
+      transport,
+      notes: notes || null
+    };
 
     try {
-      const res = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          situation,
-          options: [optA, optB],
-          emotion: selectedEmotion
-        })
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify(payload)
       });
 
-      if(!res.ok) throw new Error("서버와 통신 중 오류가 발생했습니다.");
+      const text = await res.text();
+      if (!res.ok) throw new Error(text || ("HTTP " + res.status));
 
-      const data = await res.json();
+      const data = JSON.parse(text);
+      state.lastJson = data;
       renderResult(data);
-
-    } catch (e) {
-      console.error(e);
-      alert("오류가 발생했습니다: " + e.message);
-      $('#statusBadge').innerText = "오류 발생";
-      $('#statusBadge').style.color = "#dc2626";
-    } finally {
-      // 로딩 해제
-      btn.disabled = false;
-      loader.style.display = 'none';
-      btnText.innerText = "분석하기";
+      setStatus("");
+    } catch (err) {
+      console.error(err);
+      setBadge("에러", "warn");
+      $('result').innerHTML = `
+        <div class="block">
+          <h3>오류가 발생했어요</h3>
+          <p class="tiny">/api/analyze 설정 또는 API 키를 확인해주세요.</p>
+          <p class="tiny mono">${escapeHtml(err?.message || String(err))}</p>
+        </div>
+      `;
+      setStatus("");
     }
   });
 
-  function renderResult(data) {
-    $('#idleState').style.display = 'none';
-    $('#resultArea').style.display = 'block';
-    $('#statusBadge').innerText = "분석 완료!";
-    $('#statusBadge').style.color = "#16a34a"; // green
-    $('#statusBadge').style.background = "#dcfce7"; // light green bg
-
-    $('#resShare').innerText = data.share_summary || "나의 선택, 정리가 완료되었습니다.";
-    $('#resEmotion').innerText = data.emotion_summary;
-    $('#resPattern').innerText = data.pattern_analysis;
-    $('#resRec').innerText = data.recommendation;
-    $('#resFuture').innerText = data.future_message;
-
-    // 리스크 리스트 렌더링
-    const riskHtml = data.risks.map(r => `<li>${r}</li>`).join('');
-    $('#resRisks').innerHTML = riskHtml;
-
-    // 점수 렌더링
-    $('#scFeas').innerText = data.scores.feasibility;
-    $('#scEmo').innerText = data.scores.emotion_influence;
-    $('#scReg').innerText = data.scores.regret_probability + "%";
-    $('#scRisk').innerText = data.scores.risk_sensitivity;
-
-    // 결과 쪽으로 스크롤 이동
-    $('#resultCardBox').scrollIntoView({behavior: "smooth", block: "start"});
-  }
-
-  // 한 줄 요약 복사
-  $('#copyShareBtn').addEventListener('click', () => {
-    const text = $('#resShare').innerText;
-    // 실제 배포 주소로 변경 필요
-    const url = window.location.origin;
-    navigator.clipboard.writeText(`[선택연구소] ${text}\n👉 나도 정리하러 가기: ${url}`);
-
-    const originalText = $('#copyShareBtn').innerText;
-    $('#copyShareBtn').innerText = "✅ 복사완료!";
-    setTimeout(() => {
-        $('#copyShareBtn').innerText = originalText;
-    }, 2000);
-  });
+  renderIdle();
+})();
 </script>
-
 </body>
 </html>

@@ -1,118 +1,145 @@
-export const config = {
-  runtime: 'edge', // Vercel Edge Runtime 사용 (더 빠르고 저렴)
-};
+export default async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") return res.status(204).end();
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-export default async function handler(req) {
-  // CORS 설정
-  if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 204,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
-    });
-  }
-
-  if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return res.status(500).json({ error: "OPENAI_API_KEY is not set" });
 
   try {
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      throw new Error('OPENAI_API_KEY is missing');
+    const {
+      destination,
+      tripType,
+      duration,
+      startDate,
+      people,
+      season,
+      transport,
+      notes
+    } = req.body || {};
+
+    if (!destination || !tripType || !duration) {
+      return res.status(400).json({ error: "destination, tripType, duration are required" });
     }
 
-    const body = await req.json();
-    const { situation, options, emotion } = body;
-
-    if (!situation || !Array.isArray(options) || options.length < 2 || !emotion) {
-      return new Response(JSON.stringify({ error: 'Invalid payload' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    // 시스템 프롬프트: JSON 구조 강제 및 바이럴 요소(share_summary) 추가
     const systemPrompt = `
-당신은 "선택연구소"의 냉철하지만 따뜻한 AI 분석가입니다.
-사용자의 고민, 선택지, 감정을 분석하여 명쾌하게 정리해야 합니다.
+너는 "TripReady"의 여행 준비 설계 도우미다.
+목표: 여행 준비의 귀찮음을 줄이고, 빠뜨림 불안을 낮추는 '현실적인 준비 설계'를 제공한다.
+톤: 따뜻하지만 중립적, 과장/확신/단정 금지, 판매/공포 조장 금지, 불필요한 장문 금지.
+정확성: 지역/규정/가격/운항 등은 변동 가능하므로 "확인 필요"를 적절히 포함한다.
+출력: 아래 스키마의 '엄격한 JSON'만 출력 (설명 텍스트/코드펜스 금지).
 
-[원칙]
-1. 정답을 강요하지 말고, 관점을 정리해 줄 것.
-2. 톤: 차분함, 분석적, 공감하지만 감정에 매몰되지 않음.
-3. 반드시 아래 JSON 스키마를 엄격히 준수할 것.
-
-[출력 JSON 스키마]
+반환 JSON 스키마:
 {
-  "emotion_summary": "사용자의 현재 감정 상태를 1-2문장으로 해석",
-  "pattern_analysis": "이 고민에서 보이는 사용자의 결정 패턴이나 맹점 분석",
-  "risks": ["선택 시 고려해야 할 잠재적 리스크 1", "리스크 2", "리스크 3"],
-  "future_message": "이 선택 후 1년 뒤의 나에게 보내는 짧은 메시지",
-  "recommendation": "지금 당장 실행해볼 수 있는 구체적인 행동 가이드 (A/B 중 하나를 고르라는 말 대신, 판단 기준을 제시)",
-  "share_summary": "SNS 공유용 한 줄 요약 (예: '불안은 신호등일 뿐, 멈춤 신호가 아니다. 내 선택은 ___였다.')",
-  "scores": {
-    "feasibility": 0~100 숫자 (실행 가능성),
-    "emotion_influence": 0~100 숫자 (감정이 판단을 흐리는 정도),
-    "regret_probability": 0~100 숫자 (후회 확률),
-    "risk_sensitivity": 0~100 숫자 (리스크 민감도)
+  "trip": {
+    "destination": string,
+    "trip_type": "국내"|"해외",
+    "duration": string,
+    "start_date": string|null,
+    "people": string|null,
+    "season": string|null,
+    "transport": string[],
+    "notes": string|null
   },
-  "disclaimer": "이 결과는 참고용이며, 최종 선택의 책임은 본인에게 있습니다."
+  "summary": string,
+  "timeline": {
+    "D-14": string[],
+    "D-7": string[],
+    "D-3": string[],
+    "D-1": string[]
+  },
+  "checklist": {
+    "서류/예약": string[],
+    "의류": string[],
+    "전자기기": string[],
+    "위생/생활": string[],
+    "기타": string[]
+  },
+  "common_misses": string[],
+  "scores": {
+    "prep_complexity": number,
+    "risk_level": number,
+    "forget_risk": number,
+    "start_now": string
+  },
+  "disclaimer": string
 }
+
+규칙:
+- 해외면 여권/비자/보험/환전/유심(eSIM)/해외결제/로밍 등을 우선 고려.
+- 렌트카/자차면 면허, 국제면허(해외 시), 주차, 보험/면책, 내비/거치대 등을 고려.
+- 계절/시기가 입력되면 날씨 변수(장마/한파/폭염)를 반영.
+- 아이/부모님 동반 등 notes가 있으면 해당 준비물을 반영.
+- 장소 추천이나 일정 코스는 하지 말 것(다음 버전). 오직 '준비/할 일 설계' 중심.
+- 너무 디테일한 브랜드/가격/규정 단정 금지. "확인 필요" 포함.
 `;
 
-    const userMessage = JSON.stringify({
-      situation,
-      emotion,
-      options
-    });
+    const userInput = {
+      destination,
+      tripType,
+      duration,
+      startDate: startDate || null,
+      people: people || null,
+      season: season || null,
+      transport: Array.isArray(transport) ? transport : [],
+      notes: notes || null
+    };
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
+    const r = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: "gpt-4o-mini",
         messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userMessage }
+          { role: "system", content: systemPrompt },
+          { role: "user", content: "아래 입력을 바탕으로 JSON만 출력해줘:\n" + JSON.stringify(userInput) }
         ],
-        response_format: { type: "json_object" }, // JSON 모드 강제
-        temperature: 0.7,
+        response_format: { type: "json_object" },
+        temperature: 0.5,
       }),
     });
 
-    const data = await response.json();
-
-    if (data.error) {
-      throw new Error(data.error.message);
+    const json = await r.json();
+    if (!r.ok) {
+      return res.status(r.status).json({ error: "OpenAI API error", details: json });
     }
 
-    const resultText = data.choices[0].message.content;
+    const text = json.choices?.[0]?.message?.content ?? "";
 
-    // CORS 헤더 포함하여 응답 반환
-    return new Response(resultText, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
+    const parsed = safeParseJson(text);
+    if (!parsed) {
+      return res.status(500).json({ error: "Failed to parse model JSON", raw: text });
+    }
 
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
+    parsed.trip ||= {
+      destination,
+      trip_type: tripType,
+      duration,
+      start_date: startDate || null,
+      people: people || null,
+      season: season || null,
+      transport: Array.isArray(transport) ? transport : [],
+      notes: notes || null
+    };
+
+    parsed.disclaimer ||= "참고용 설계이며, 현지/항공사/숙소 정책은 최종 확인이 필요합니다.";
+    return res.status(200).json(parsed);
+
+  } catch (e) {
+    return res.status(500).json({ error: "Server error", message: e?.message || String(e) });
   }
+}
+
+function safeParseJson(text) {
+  if (!text) return null;
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  if (start === -1 || end === -1 || end <= start) return null;
+  const sliced = text.slice(start, end + 1);
+  try { return JSON.parse(sliced); } catch { return null; }
 }
